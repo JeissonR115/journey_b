@@ -12,9 +12,9 @@ export const getJourneys = async (req, res) => {
 
 // Obtener un trayecto por su ID
 export const getJourneyById = async (req, res) => {
-    const { id_journey } = req.params;
+    const { id } = req.params;
     try {
-        const journey = await Journey.getJourneyById(id_journey);
+        const journey = await Journey.getJourneyById(id);
         if (!journey) {
             return res.status(404).json({ message: 'Trayecto no encontrado' });
         }
@@ -38,10 +38,10 @@ export const createJourney = async (req, res) => {
 
 // Actualizar un trayecto
 export const updateJourney = async (req, res) => {
-    const { id_journey } = req.params;
+    const { id } = req.params;
     const { driver_id, vehicle_id, start_time, end_time } = req.body;
     try {
-        const affectedRows = await Journey.updateJourney(id_journey, driver_id, vehicle_id, start_time, end_time);
+        const affectedRows = await Journey.updateJourney(id, driver_id, vehicle_id, start_time, end_time);
         if (affectedRows === 0) {
             return res.status(404).json({ message: 'Trayecto no encontrado o no modificado' });
         }
@@ -53,9 +53,9 @@ export const updateJourney = async (req, res) => {
 
 // Eliminar un trayecto
 export const deleteJourney = async (req, res) => {
-    const { id_journey } = req.params;
+    const { id } = req.params;
     try {
-        const affectedRows = await Journey.deleteJourney(id_journey);
+        const affectedRows = await Journey.deleteJourney(id);
         if (affectedRows === 0) {
             return res.status(404).json({ message: 'Trayecto no encontrado' });
         }

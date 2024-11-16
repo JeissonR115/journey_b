@@ -1,4 +1,4 @@
-import { Vehicle } from "../models/vehicleModel";
+import { Vehicle } from "../models/vehicleModel.js";
 
 export const getVehicles = async (req, res) => {
     try {
@@ -11,9 +11,9 @@ export const getVehicles = async (req, res) => {
 
 // Obtener un vehículo por su ID
 export const getVehicleById = async (req, res) => {
-    const { id_vehicle } = req.params;
+    const { id } = req.params;
     try {
-        const vehicle = await Vehicle.getVehicleById(id_vehicle);
+        const vehicle = await Vehicle.getVehicleById(id);
         if (!vehicle) {
             return res.status(404).json({ message: 'Vehículo no encontrado' });
         }
@@ -36,10 +36,10 @@ export const createVehicle = async (req, res) => {
 
 // Actualizar un vehículo
 export const updateVehicle = async (req, res) => {
-    const { id_vehicle } = req.params;
+    const { id } = req.params;
     const { plate, id_type_vehicle, id_provider } = req.body;
     try {
-        const affectedRows = await Vehicle.updateVehicle(id_vehicle, plate, id_type_vehicle, id_provider);
+        const affectedRows = await Vehicle.updateVehicle(id, plate, id_type_vehicle, id_provider);
         if (affectedRows === 0) {
             return res.status(404).json({ message: 'Vehículo no encontrado o no modificado' });
         }
@@ -51,9 +51,9 @@ export const updateVehicle = async (req, res) => {
 
 // Eliminar un vehículo
 export const deleteVehicle = async (req, res) => {
-    const { id_vehicle } = req.params;
+    const { id } = req.params;
     try {
-        const affectedRows = await Vehicle.deleteVehicle(id_vehicle);
+        const affectedRows = await Vehicle.deleteVehicle(id);
         if (affectedRows === 0) {
             return res.status(404).json({ message: 'Vehículo no encontrado' });
         }

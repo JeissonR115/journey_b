@@ -1,16 +1,16 @@
 import { db } from "../../app.js";
 
-// Modelo Vehicle
 export class Vehicle {
     static async getAllVehicles() {
         const query = 'SELECT * FROM tbl_collection_accounts_vehicles';
-        const [vehicles] = await db.query(query);
+        const vehicles = await db.query(query);
         return vehicles;
     }
 
     static async getVehicleById(id_vehicle) {
         const query = 'SELECT * FROM tbl_collection_accounts_vehicles WHERE id_vehicles = ?';
-        const [vehicle] = await db.query(query, [id_vehicle]);
+        const vehicle = await db.query(query, [id_vehicle]);
+        console.log(id_vehicle)
         return vehicle.length > 0 ? vehicle[0] : null;
     }
 
@@ -32,5 +32,3 @@ export class Vehicle {
         return result.affectedRows;
     }
 }
-
-

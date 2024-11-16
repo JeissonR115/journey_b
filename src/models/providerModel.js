@@ -1,4 +1,5 @@
 import { db } from "../../app.js";
+
 export class Provider {
     static async getAllProviders() {
         const query = 'SELECT * FROM tbl_collection_accounts_providers';
@@ -30,4 +31,3 @@ export class Provider {
         return result.affectedRows;
     }
 }
-

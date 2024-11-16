@@ -12,9 +12,9 @@ export const getProviders = async (req, res) => {
 
 // Obtener un proveedor por su ID
 export const getProviderById = async (req, res) => {
-    const { id_provider } = req.params;
+    const { id } = req.params;
     try {
-        const provider = await Provider.getProviderById(id_provider);
+        const provider = await Provider.getProviderById(id);
         if (!provider) {
             return res.status(404).json({ message: 'Proveedor no encontrado' });
         }
@@ -37,10 +37,10 @@ export const createProvider = async (req, res) => {
 
 // Actualizar un proveedor
 export const updateProvider = async (req, res) => {
-    const { id_provider } = req.params;
+    const { id } = req.params;
     const { id_type_provider, description } = req.body;
     try {
-        const affectedRows = await Provider.updateProvider(id_provider, id_type_provider, description);
+        const affectedRows = await Provider.updateProvider(id, id_type_provider, description);
         if (affectedRows === 0) {
             return res.status(404).json({ message: 'Proveedor no encontrado o no modificado' });
         }
@@ -52,9 +52,9 @@ export const updateProvider = async (req, res) => {
 
 // Eliminar un proveedor
 export const deleteProvider = async (req, res) => {
-    const { id_provider } = req.params;
+    const { id } = req.params;
     try {
-        const affectedRows = await Provider.deleteProvider(id_provider);
+        const affectedRows = await Provider.deleteProvider(id);
         if (affectedRows === 0) {
             return res.status(404).json({ message: 'Proveedor no encontrado' });
         }

@@ -1,35 +1,33 @@
 import { db } from "../../app.js";
 
-// Modelo Journey
 export class Journey {
     static async getAllJourneys() {
-        const query = 'SELECT * FROM tbl_colection_accounts_journey_request';
+        const query = 'SELECT * FROM tbl_collection_accounts_journey_request';
         const journeys = await db.query(query);
-        console.log(journeys)
         return journeys;
     }
 
-    static async getJourneyById(id_journey) {
-        const query = 'SELECT * FROM tbl_journey WHERE id_journey = ?';
-        const [journey] = await db.query(query, [id_journey]);
+    static async getJourneyById(id_journey_request) {
+        const query = 'SELECT * FROM tbl_collection_accounts_journey_request WHERE id_journey_request = ?';
+        const journey = await db.query(query, [id_journey_request]);
         return journey.length > 0 ? journey[0] : null;
     }
 
-    static async createJourney(driver_id, vehicle_id, start_time, end_time) {
-        const query = 'INSERT INTO tbl_journey (driver_id, vehicle_id, start_time, end_time) VALUES (?, ?, ?, ?)';
-        const [result] = await db.query(query, [driver_id, vehicle_id, start_time, end_time]);
+    static async createJourney(request_date, id_user, id_source, id_target, service_date, service_hour, id_center_cost, id_status, cancellation_motive) {
+        const query = 'INSERT INTO tbl_collection_accounts_journey_request (request_date, id_user, id_source, id_target, service_date, service_hour, id_center_cost, id_status, cancellation_motive) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        const result = await db.query(query, [request_date, id_user, id_source, id_target, service_date, service_hour, id_center_cost, id_status, cancellation_motive]);
         return result.insertId;
     }
 
-    static async updateJourney(id_journey, driver_id, vehicle_id, start_time, end_time) {
-        const query = 'UPDATE tbl_journey SET driver_id = ?, vehicle_id = ?, start_time = ?, end_time = ? WHERE id_journey = ?';
-        const [result] = await db.query(query, [driver_id, vehicle_id, start_time, end_time, id_journey]);
+    static async updateJourney(id_journey_request, request_date, id_user, id_source, id_target, service_date, service_hour, id_center_cost, id_status, cancellation_motive) {
+        const query = 'UPDATE tbl_collection_accounts_journey_request SET request_date = ?, id_user = ?, id_source = ?, id_target = ?, service_date = ?, service_hour = ?, id_center_cost = ?, id_status = ?, cancellation_motive = ? WHERE id_journey_request = ?';
+        const result = await db.query(query, [request_date, id_user, id_source, id_target, service_date, service_hour, id_center_cost, id_status, cancellation_motive, id_journey_request]);
         return result.affectedRows;
     }
 
-    static async deleteJourney(id_journey) {
-        const query = 'DELETE FROM tbl_journey WHERE id_journey = ?';
-        const [result] = await db.query(query, [id_journey]);
+    static async deleteJourney(id_journey_request) {
+        const query = 'DELETE FROM tbl_collection_accounts_journey_request WHERE id_journey_request = ?';
+        const result = await db.query(query, [id_journey_request]);
         return result.affectedRows;
     }
 }

@@ -1,5 +1,5 @@
 import { db } from "../../app.js";
-// Modelo Driver
+
 export class Driver {
     static async getAllDrivers() {
         const query = 'SELECT * FROM tbl_collection_accounts_drivers';

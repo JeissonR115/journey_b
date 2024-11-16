@@ -1,4 +1,4 @@
-import { Driver } from "../models/driverModel";
+import { Driver } from "../models/driverModel.js";
 // Obtener todos los conductores
 export const getDrivers = async (req, res) => {
     try {
