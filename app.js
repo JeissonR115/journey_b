@@ -17,7 +17,7 @@ app.use(json());
 app.use(urlencoded({ extended: true }));
 
 // Conexión a la base de datos
-export const db = connect({
+export const db = await connect({
     host: HOST,
     user: USER,
     password: PASSWORD,

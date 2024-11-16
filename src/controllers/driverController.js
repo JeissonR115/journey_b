@@ -1,91 +1,64 @@
-import { db } from "../../app";
+import { Driver } from "../models/driverModel";
 // Obtener todos los conductores
-export const getAllDrivers = async (req, res) => {
+export const getDrivers = async (req, res) => {
     try {
-        const query = 'SELECT * FROM tbl_collection_accounts_drivers';
-
-        const [drivers] = await db.execute(query);
-
+        const drivers = await Driver.getAllDrivers();
         res.status(200).json(drivers);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error al obtener los conductores' });
+        res.status(500).json({ message: 'Error al obtener los conductores', error });
     }
 };
 
-// Obtener conductor por ID
+// Obtener un conductor por su ID
 export const getDriverById = async (req, res) => {
+    const { id_driver } = req.params;
     try {
-        const { id_driver } = req.params;
-
-        const query = 'SELECT * FROM tbl_collection_accounts_drivers WHERE id_driver = ?';
-
-        const [driver] = await db.execute(query, [id_driver]);
-
-        if (driver.length === 0) {
+        const driver = await Driver.getDriverById(id_driver);
+        if (!driver) {
             return res.status(404).json({ message: 'Conductor no encontrado' });
         }
-
-        res.status(200).json(driver[0]);
+        res.status(200).json(driver);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error al obtener el conductor' });
+        res.status(500).json({ message: 'Error al obtener el conductor', error });
     }
 };
 
-// Agregar un nuevo conductor
-export const addDriver = async (req, res) => {
+// Crear un nuevo conductor
+export const createDriver = async (req, res) => {
+    const { first_name, last_name, id_provider } = req.body;
     try {
-        const { first_name, last_name, id_provider } = req.body;
-
-        const query = 'INSERT INTO tbl_collection_accounts_drivers (first_name, last_name, id_provider) VALUES (?, ?, ?)';
-
-        const [result] = await db.execute(query, [first_name, last_name, id_provider]);
-
-        res.status(201).json({
-            message: 'Conductor creado con éxito',
-            driverId: result.insertId,
-        });
+        const newDriverId = await Driver.createDriver(first_name, last_name, id_provider);
+        res.status(201).json({ message: 'Conductor creado con éxito', id: newDriverId });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error al crear el conductor' });
+        res.status(500).json({ message: 'Error al crear el conductor', error });
     }
 };
 
-// Editar conductor
-export const editDriver = async (req, res) => {
+// Actualizar un conductor
+export const updateDriver = async (req, res) => {
+    const { id_driver } = req.params;
+    const { first_name, last_name, id_provider } = req.body;
     try {
-        const { id_driver } = req.params;
-        const { first_name, last_name, id_provider } = req.body;
-
-        const query = 'UPDATE tbl_collection_accounts_drivers SET first_name = ?, last_name = ?, id_provider = ? WHERE id_driver = ?';
-
-        const [result] = await db.execute(query, [first_name, last_name, id_provider, id_driver]);
-
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ message: 'Conductor no encontrado' });
+        const affectedRows = await Driver.updateDriver(id_driver, first_name, last_name, id_provider);
+        if (affectedRows === 0) {
+            return res.status(404).json({ message: 'Conductor no encontrado o no modificado' });
         }
-
-        res.status(200).json({ message: 'Conductor actualizado correctamente' });
+        res.status(200).json({ message: 'Conductor actualizado con éxito' });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error al editar el conductor' });
+        res.status(500).json({ message: 'Error al actualizar el conductor', error });
     }
 };
 
+// Eliminar un conductor
 export const deleteDriver = async (req, res) => {
+    const { id_driver } = req.params;
     try {
-        const { id_driver } = req.params;
-        const query = 'DELETE FROM tbl_collection_accounts_drivers WHERE id_driver = ?';
-        const [result] = await db.execute(query, [id_driver]);
-
-        if (result.affectedRows === 0) {
+        const affectedRows = await Driver.deleteDriver(id_driver);
+        if (affectedRows === 0) {
             return res.status(404).json({ message: 'Conductor no encontrado' });
         }
-
-        res.status(200).json({ message: 'Conductor eliminado correctamente' });
+        res.status(200).json({ message: 'Conductor eliminado con éxito' });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error al eliminar el conductor' });
+        res.status(500).json({ message: 'Error al eliminar el conductor', error });
     }
 };

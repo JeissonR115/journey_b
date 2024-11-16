@@ -1,7 +1,7 @@
 import { Router } from 'express';
 const router = Router();
 
-// import { addJourney, assignVehicle, confirmVehicle, editAssignment, cancelJourney, getApprovedJourneys, getPendingJourneys } from '../controllers/journeyController';
+import { getJourneys } from '../controllers/journeyController.js';
 
 // router.post('/add', addJourney);
 // router.post('/assign-vehicle', assignVehicle);
@@ -10,6 +10,7 @@ const router = Router();
 // router.delete('/cancel', cancelJourney);
 // router.get('/approved', getApprovedJourneys);
 // router.get('/pending', getPendingJourneys);
+router.get('/', getJourneys);
 router.get('/a', (req, res) => {
     res.send('A');
     console.log('hola a a')

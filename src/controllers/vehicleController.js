@@ -1,87 +1,64 @@
-import { db } from "../../app";
+import { Vehicle } from "../models/vehicleModel";
 
-
-export const getAllVehicles = async (req, res) => {
+export const getVehicles = async (req, res) => {
     try {
-        const query = 'SELECT * FROM tbl_collection_accounts_vehicles';
-
-        const [vehicles] = await db.execute(query);
-
+        const vehicles = await Vehicle.getAllVehicles();
         res.status(200).json(vehicles);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error al obtener los vehículos' });
+        res.status(500).json({ message: 'Error al obtener los vehículos', error });
     }
 };
+
+// Obtener un vehículo por su ID
 export const getVehicleById = async (req, res) => {
+    const { id_vehicle } = req.params;
     try {
-        const { id_vehicle } = req.params;
-
-        const query = 'SELECT * FROM tbl_collection_accounts_vehicles WHERE id_vehicles = ?';
-
-        const [vehicle] = await db.execute(query, [id_vehicle]);
-
-        if (vehicle.length === 0) {
+        const vehicle = await Vehicle.getVehicleById(id_vehicle);
+        if (!vehicle) {
             return res.status(404).json({ message: 'Vehículo no encontrado' });
         }
-
-        res.status(200).json(vehicle[0]);
+        res.status(200).json(vehicle);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error al obtener el vehículo' });
+        res.status(500).json({ message: 'Error al obtener el vehículo', error });
     }
 };
-export const addVehicle = async (req, res) => {
+
+// Crear un nuevo vehículo
+export const createVehicle = async (req, res) => {
+    const { plate, id_type_vehicle, id_provider } = req.body;
     try {
-        const { plate, id_type_vehicle, id_provider } = req.body;
-
-        const query = 'INSERT INTO tbl_collection_accounts_vehicles (plate, id_type_vehicle, id_provider) VALUES (?, ?, ?)';
-
-        const [result] = await db.execute(query, [plate, id_type_vehicle, id_provider]);
-
-        res.status(201).json({
-            message: 'Vehículo creado con éxito',
-            vehicleId: result.insertId,
-        });
+        const newVehicleId = await Vehicle.createVehicle(plate, id_type_vehicle, id_provider);
+        res.status(201).json({ message: 'Vehículo creado con éxito', id: newVehicleId });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error al crear el vehículo' });
+        res.status(500).json({ message: 'Error al crear el vehículo', error });
     }
 };
-export const editVehicle = async (req, res) => {
+
+// Actualizar un vehículo
+export const updateVehicle = async (req, res) => {
+    const { id_vehicle } = req.params;
+    const { plate, id_type_vehicle, id_provider } = req.body;
     try {
-        const { id_vehicle } = req.params;
-        const { plate, id_type_vehicle, id_provider } = req.body;
-
-        const query = 'UPDATE tbl_collection_accounts_vehicles SET plate = ?, id_type_vehicle = ?, id_provider = ? WHERE id_vehicles = ?';
-
-        const [result] = await db.execute(query, [plate, id_type_vehicle, id_provider, id_vehicle]);
-
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ message: 'Vehículo no encontrado' });
+        const affectedRows = await Vehicle.updateVehicle(id_vehicle, plate, id_type_vehicle, id_provider);
+        if (affectedRows === 0) {
+            return res.status(404).json({ message: 'Vehículo no encontrado o no modificado' });
         }
-
-        res.status(200).json({ message: 'Vehículo actualizado correctamente' });
+        res.status(200).json({ message: 'Vehículo actualizado con éxito' });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error al editar el vehículo' });
+        res.status(500).json({ message: 'Error al actualizar el vehículo', error });
     }
 };
+
+// Eliminar un vehículo
 export const deleteVehicle = async (req, res) => {
+    const { id_vehicle } = req.params;
     try {
-        const { id_vehicle } = req.params;
-
-        const query = 'DELETE FROM tbl_collection_accounts_vehicles WHERE id_vehicles = ?';
-
-        const [result] = await db.execute(query, [id_vehicle]);
-
-        if (result.affectedRows === 0) {
+        const affectedRows = await Vehicle.deleteVehicle(id_vehicle);
+        if (affectedRows === 0) {
             return res.status(404).json({ message: 'Vehículo no encontrado' });
         }
-
-        res.status(200).json({ message: 'Vehículo eliminado correctamente' });
+        res.status(200).json({ message: 'Vehículo eliminado con éxito' });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error al eliminar el vehículo' });
+        res.status(500).json({ message: 'Error al eliminar el vehículo', error });
     }
 };
